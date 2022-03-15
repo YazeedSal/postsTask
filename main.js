@@ -89,7 +89,7 @@ class Renderer {
 
             }
 
-            
+
         })
         closeBtn.addEventListener('click', () => {
             commentsCon.innerHTML = ''
@@ -140,9 +140,12 @@ const app = new App('Rami')
 renderer.renderPosts(app.posts)
 
 btn.addEventListener('click', function () {
-    const content = input.value
-    app.addPost(content)
-    renderer.renderPosts(app.posts)
+    if (input.value) {
+        const content = input.value
+        app.addPost(content)
+        renderer.renderPosts(app.posts)
+    }
+
 })
 
 
