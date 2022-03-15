@@ -51,6 +51,7 @@ class Renderer {
         content.classList.add('content')
         content.innerText = text
         contentContainer.append(content)
+        input.value = ''
         return contentContainer
     }
     createActions(post, posts) {
@@ -59,16 +60,59 @@ class Renderer {
         const likeBtn = document.createElement('div')
         likeBtn.classList.add('likeBtn')
         likeBtn.innerText = post.isLiked ? 'liked' : 'Like'
-        likeBtn.addEventListener('click',  ()=> {
+        likeBtn.addEventListener('click', () => {
             post.toggleLike()
             this.renderPosts(posts)
         })
         const commentBtn = document.createElement('div')
         commentBtn.innerText = 'Comment'
         commentBtn.classList.add('commentBtn')
-        actionsContainer.append(likeBtn, commentBtn)
+        const commentsCon = document.createElement('div')
+        const commentsInput = document.createElement('input')
+        commentsInput.classList.add('commentsInput')
+        const sumbitBtn = document.createElement('div')
+        sumbitBtn.classList.add('sumbitBtn')
+        const closeBtn = document.createElement('div')
+        closeBtn.classList.add('closeBtn')
+
+        commentBtn.addEventListener('click', () => {
+            commentsCon.append(commentsInput)
+            sumbitBtn.innerText = 'Sumbit'
+            closeBtn.innerText = 'x'
+            commentsCon.append(sumbitBtn)
+            commentsCon.append(closeBtn)
+            //commentsCon.append(post.comments)
+            for (let i = 0; i < post.comments.length; i++) {
+                const block = document.createElement('div')
+                block.innerText = post.comments[i]
+                commentsCon.append(block)
+
+            }
+
+            
+        })
+        closeBtn.addEventListener('click', () => {
+            commentsCon.innerHTML = ''
+            addedComments.innerHTML = ''
+        })
+
+        const addedComments = document.createElement('div')
+        addedComments.classList.add('addedComments')
+
+        sumbitBtn.addEventListener('click', () => {
+            post.comments.push(commentsInput.value)
+            console.log(post.comments);
+            addedComments.innerHTML += `<div>${commentsInput.value}</div>`
+            actionsContainer.append(addedComments)
+            commentsInput.value = ''
+        })
+
+
+
+        actionsContainer.append(likeBtn, commentBtn, commentsCon)
         return actionsContainer
     }
+
     createPost(post, posts) {
         const postContainer = this.createPostContainer()
         const contentContainer = this.createContent(post.content)
@@ -78,11 +122,12 @@ class Renderer {
     }
 
     renderPosts(posts) {
-        this.postsContainer.innerHTML=''
+        this.postsContainer.innerHTML = ''
         for (let i = 0; posts[i]; i++) {
             this.createPost(posts[i], posts)
         }
     }
+
 
 }
 
@@ -94,7 +139,7 @@ const renderer = new Renderer()
 const app = new App('Rami')
 renderer.renderPosts(app.posts)
 
-btn.addEventListener('click',function () {
+btn.addEventListener('click', function () {
     const content = input.value
     app.addPost(content)
     renderer.renderPosts(app.posts)
